@@ -43,7 +43,6 @@ def get_symbol_from_yahoo(symbol, start, end):
     print start ,end
     px = web.get_data_yahoo(symbol, start=start, end=end)
     close = px[['Close']].dropna()
-    # close.index = rets.index.tz_localize("UTC")
     close.columns = [symbol]
 
     print "close",close
