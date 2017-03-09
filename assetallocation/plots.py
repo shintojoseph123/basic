@@ -44,4 +44,4 @@ def weighted_returns_plot(stock_symbols, all_returns, time_period):
         data.append(trace)
 
     # plotting graph
-    plot(data, filename='stock_performance.html')
+    plot(data, filename='portfolio_graph.html')
