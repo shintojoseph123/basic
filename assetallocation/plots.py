@@ -1,4 +1,6 @@
 
+# importing libraries
+import numpy as np
 import plotly.graph_objs as go
 from plotly.offline import plot
 

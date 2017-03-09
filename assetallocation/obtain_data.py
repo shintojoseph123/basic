@@ -16,13 +16,9 @@ def close_price_data(start_year, end_year, stock_symbols, time_period):
     Close price of symbol in requested period.
     """
 
-    # obtaining the TICKER symbols of the stocks
-    # stock = stocks
-
     # initialising start date and end date
     start_date =  start_year
     end_date = end_year
-
 
     # creating dictionary to obtain close_price_data
     close_price_data = {}

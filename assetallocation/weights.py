@@ -15,10 +15,10 @@ def assign_weights(start_year,end_year,time_period,stock_symbols):
     -------
     Weights for every stocks in each time_period
     """
+    start_year = start_year.date()
+    end_year = end_year.date()
 
-    d0 = date(start_year, 1, 1)
-    d1 = date(end_year, 12, 31)
-    date_difference = d1 - d0
+    date_difference = end_year - start_year
 
     number_of_days = date_difference.days
 
@@ -34,10 +34,7 @@ def assign_weights(start_year,end_year,time_period,stock_symbols):
     elif time_period == "A":
         number_of_weights = int(number_of_days/365)
 
-
-
     weights = {}
-
     # for each TICKER symbol in stocks
     for symbol in stock_symbols:
         temp = []
@@ -45,7 +42,5 @@ def assign_weights(start_year,end_year,time_period,stock_symbols):
             weight = input("enter the weight for {} in time_period {} :".format(symbol,period+1))
             temp.append(int(weight))
         weights[symbol] = temp
-
-    print weights,number_of_weights
 
     return weights
