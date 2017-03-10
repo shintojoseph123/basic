@@ -1,1 +1,0 @@
-# valustat_prototype
