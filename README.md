@@ -1,2 +1,0 @@
-valustat_prototype
-
