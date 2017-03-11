@@ -29,6 +29,7 @@ def weighted_returns(start_year, end_year, input_price, stock_symbols, weights, 
     # create a portfolio_prices list to store all the portfolio_profits with first input price as its first
     portfolio_prices = [input_price]
 
+# This function should be calculated outside and given as a parameter
     # obtainig close_price_data data
     close_price = close_price_data(start_year, end_year, stock_symbols, time_period)
 
@@ -41,6 +42,7 @@ def weighted_returns(start_year, end_year, input_price, stock_symbols, weights, 
     # until the end of timeperiod
     for i in range(time_period_num):
 
+# This function should be calculated outside and given as a parameter
         # obtain total profit
         portfolio_profits = portfolio_profit(input_price, i, close_price, weights, stock_symbols)
 
@@ -59,11 +61,13 @@ def weighted_returns(start_year, end_year, input_price, stock_symbols, weights, 
     # converting dataframe to list
     portfolio_returns_list = portfolio_returns_dataframe[0].values.tolist()
 
+# This function should be calculated outside from the return of function weighted_returns()
     # normalise portfolio_returns_list to 100
     norm_portfolio_returns = normalise(portfolio_returns_list,100)
 
     # append all the norm_portfolio_returns to portfolio_returns[]
     portfolio_returns.append(norm_portfolio_returns)
-
+    
+# This function should be called outside for plotting
     # plotting weighted_returns
     weighted_returns_plot(stock_symbols, portfolio_returns, time_period)
