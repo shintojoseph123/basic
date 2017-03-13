@@ -19,13 +19,6 @@ import pandas as pd
 # views
 def index(request):
 
-    # variables to give inputs
-
-    start_year = "2007-01-1"
-    end_year = "2008-01-31"
-    input_price = 500000
-    time_period = "Q"
-
 
     #set BYearEnd as Buisness year end function
     BuisnessYearEnd = BYearEnd()
