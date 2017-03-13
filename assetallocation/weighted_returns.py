@@ -3,25 +3,21 @@ from obtain_data import close_price_data
 from portfolio_profit import portfolio_profit
 from utilities import returns,time_period_number,normalise
 
-
-
 # importing libraries
 import numpy as np
 import pandas as pd
 
 
-def weighted_returns(start_year, end_year, input_price, stock_symbols, weights, time_period_num, close_price, portfolio_profits):
+def weighted_returns(input_price, time_period_num, close_price, portfolio_profits):
     """
     function to find the returns of equal weighted portfolio and plot it
 
     Parameters
-    ----------
-    start_year : starting year from which stock data is to be obtained
-    end_year : ending year of the stock data to be obtained
+    -----------
     input_price : amount to buy the stocks
-    stock_symbols : TICKER symbol of each stocks
-    weights : weights for each stock at each time_period
     time_period_num : number of time_periods
+    close_price : close price at each time_period
+    portfolio_profits : profits of portfolio at each time_period
     """
 
     portfolio_returns = []
@@ -32,7 +28,7 @@ def weighted_returns(start_year, end_year, input_price, stock_symbols, weights, 
     # until the end of timeperiod
     for i in range(time_period_num):
 
-        # obtain total profit
+        # obtain portfolio_profit at each time_period
         portfolio_profit = portfolio_profits[i]
 
         # add total profit with input price

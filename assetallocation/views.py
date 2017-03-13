@@ -5,6 +5,7 @@ from weighted_returns import weighted_returns
 from portfolio_profit import portfolio_profit
 from plots import weighted_returns_plot
 from brownian import geometric_brownian_motion_levels
+from obtain_data import close_price_data
 
 
 # importing libraries
@@ -80,6 +81,9 @@ def index(request):
 
 # athiras end
 
+    # obtainig close_price_data data
+    # close_price = close_price_data(start_year, end_year, stock_symbols, time_period)
+
     # until the end of timeperiod
     portfolio_profits = []
     for i in range(time_period_num):
@@ -88,7 +92,7 @@ def index(request):
         portfolio_profits.append(portfolio_profit(input_price, i, close_price, weights, stock_symbols))
     print portfolio_profits[0]
 
-    portfolio_returns = weighted_returns(start_year, end_year, input_price, stock_symbols, weights, time_period_num, close_price, portfolio_profits)
+    portfolio_returns = weighted_returns(input_price, time_period_num, close_price, portfolio_profits)
 
     # plotting weighted_returns
     weighted_returns_plot(stock_symbols, portfolio_returns, time_period)

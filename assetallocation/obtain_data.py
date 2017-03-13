@@ -38,6 +38,5 @@ def close_price_data(start_year, end_year, stock_symbols, time_period):
 
     # converting to dataframe
     close_price_dataframe = pd.DataFrame(close_price_data)
-    print "dataframe close price",close_price_dataframe
 
     return close_price_dataframe

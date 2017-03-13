@@ -11,7 +11,7 @@ def portfolio_profit(input_price, i, close_price_data, weights, stock_symbols):
     ----------
 
     input_price : amount to buy the stocks
-    i : variable to loop through
+    i : time_period number
     close_price_data :close price data of particular period
     weights : weights for each stock at each time_period
 
@@ -25,7 +25,6 @@ def portfolio_profit(input_price, i, close_price_data, weights, stock_symbols):
 
     # converting to dataframe
     close_price_dataframe = pd.DataFrame(close_price_data)
-
 
     # for each TICKER symbol in stock
     for symbol in stock_symbols:
