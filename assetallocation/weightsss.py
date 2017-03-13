@@ -1,16 +1,16 @@
-
-
 # customised imports
 from obtain_data import close_price_data
 from portfolio_profit import portfolio_profit
-from utilities import returns
+from utilities import returns,time_period_number,normalise
 from plots import weighted_returns_plot
-
 
 # importing libraries
 import numpy as np
+import pandas as pd
+
 
 """this is a code to test weighted returns in another way"""
+
 
 def weighted_returns(start_year, end_year, input_price, stock_symbols, weights, time_period):
     """
@@ -23,128 +23,60 @@ def weighted_returns(start_year, end_year, input_price, stock_symbols, weights, 
     input_price : amount to buy the stocks
     stock_symbols : TICKER symbol of each stocks
     weights : weights for each stock at each time_period
-
+    time_period : weekly, monthly, quarterly, yearly
     """
 
-    # obtaining list of normalised returns of all stocks
-    # all_returns = stock_performance(start_year,end_year)
-    all_returns = []
+    portfolio_returns = []
 
-    # create a portfolio list to append all the inputs with profits with first input price as its first
-    portfolio = [input_price]
+    # create a portfolio_prices list to store all the portfolio_profits with first input price as its first
+    portfolio_prices = [input_price]
 
-    # initializing variables
-    loop = 0
-    beg = 0
-
-    # obtainig quarterly_price data
+    # obtainig close_price_data data
     close_price = close_price_data(start_year, end_year, stock_symbols, time_period)
-    print type(close_price)
-    print close_price
-    print "returns",returns(close_price, stock_symbols)
-    ret = returns(close_price, stock_symbols)
-    print "profit",ret['TCS'].diff()
 
     # obtaining Quarterly returns using obtain_data() function
     returns_dataframe = returns(close_price, stock_symbols)
 
+    # finding how many time_periods are there between start date and end date
+    time_period_num = time_period_number(start_year, end_year, time_period)
 
-    # quarterly_price_data = quarterly_price(start_year ,end_year)
-
-    # finding total profit
-    if loop == 0:
-
-        # obtain total profit
-        portfolio_ret = portfolio_profit(input_price, beg, close_price, weights, stock_symbols)
-        print "portfolio_ret",portfolio_ret
-
-        # add total profit with input price
-        input_price = input_price + portfolio_ret[0]
-
-        # append new input price to the portfolio list
-        portfolio.append(input_price)
-
-        # obtain number of quarters to the loop variable
-        loop = portfolio_ret[1]
-
-    # finding how many quarters for calculating multivariance
-    quarters = loop
-
-    # finding how many quarters and subtracting one as a loop executed above already
-    loop = int((loop)-1)
-
-
-
-    # until the end of quarter
-    for i in range(loop):
-
-        beg = beg + 1
+    # until the end of timeperiod
+    for i in range(time_period_num):
 
         # obtain total profit
-        portfolio_ret = portfolio_profit(input_price, beg, close_price, weights, stock_symbols)
+        portfolio_profits = portfolio_profit(input_price, i, close_price, weights, stock_symbols)
 
         # add total profit with input price
-        input_price = input_price + portfolio_ret[0]
+        input_price = input_price + portfolio_profits
 
         # append new input price to the portfolio list
-        portfolio.append(input_price)
+        portfolio_prices.append(input_price)
 
+    # converting portfolio_prices into dataframe
+    portfolio_prices = pd.DataFrame(portfolio_prices)
 
+    # finding returns of portfolio_prices, changing the nan to 0
+    portfolio_returns_dataframe = portfolio_prices.pct_change(1).fillna(0)
 
-    # obtaining the TICKER symbols of the stocks
-    # stock = stocks()
+    # converting dataframe to list
+    portfolio_returns_list = portfolio_returns_dataframe[0].values.tolist()
 
-    # obtain quarterly data inorder to draw pyfolio cause pyfolio will draw only in a particular UTC format
-    data = close_price[stock_symbols[0]]
+    # normalise portfolio_returns_list to 100
+    norm_portfolio_returns = normalise(portfolio_returns_list,100)
 
-    # assign the portfolio values to the above dataset
-    for i in range(len(data)):
-        data[i]=portfolio[i]
-
-    # finding returns of portfolio
-    data = data.pct_change(1)
-
-    # plotting tearsheet of portfolio using pyfolio
-    # pf.create_returns_tear_sheet(data)
-
-
-    # changing to numpy array
-    data = np.array(data)
-
-    # create a list to store normalised portfolio returns
-    norm_portfolio_returns = []
-    for i in data:
-        if np.isnan(i):
-            i = float(0)
-            norm_portfolio_returns.append(i)
-        else:
-            i = float(i)
-            norm_portfolio_returns.append(i)
-
-
-
-    # normalising to 100
-    norm = 100
-    for i in range(len(norm_portfolio_returns)):
-        push = (1+norm_portfolio_returns[i])*norm
-        norm = push
-        norm_portfolio_returns[i] = push
-
-    # append all the norm_portfolio_returns to all_returns
-    all_returns.append(norm_portfolio_returns)
-
-    print "all_returns",all_returns
+    # append all the norm_portfolio_returns to portfolio_returns[]
+    portfolio_returns.append(norm_portfolio_returns)
 
     # plotting weighted_returns
-    weighted_returns_plot(stock_symbols, all_returns, time_period)
-
+    weighted_returns_plot(stock_symbols, portfolio_returns, time_period)
 
 
 
 import numpy as np
 from utilities import returns
+import pandas as pd
 
-def portfolio_profit(input_price, beg, close_price_data, weights, stock_symbols):
+def portfolio_profit(input_price, i, close_price_data, weights, stock_symbols):
     """
     finds the total profit and number of quarters and returns a list
 
@@ -152,113 +84,48 @@ def portfolio_profit(input_price, beg, close_price_data, weights, stock_symbols)
     ----------
 
     input_price : amount to buy the stocks
-    beg : variable to loop through
+    i : variable to loop through
     close_price_data :close price data of particular period
     weights : weights for each stock at each time_period
 
     """
 
-    print "inside portfolio profit"
-    # obtaining the TICKER symbols of the stocks
-    # stock = stocks()
-
-    # obtaining Quarterly returns of stock data
-    returns_dataframe = returns(close_price_data, stock_symbols)
-
     # finding the number of stocks
     no_of_stocks = len(stock_symbols)
 
-
-
     # list to store all return values
-    all_profits = []
+    each_stock_profit = []
 
-    stock_holding = []
+    # converting to dataframe
+    close_price_dataframe = pd.DataFrame(close_price_data)
+
+
     # for each TICKER symbol in stock
     for symbol in stock_symbols:
-        print (symbol)
-        # obtaining quarterly price data
-        returns_dataframe[symbol] = close_price_data[symbol]
-
-        # converting to numpy array for calculation
-        numpy_close_price_data = np.array(close_price_data[symbol])
 
         # obtaining the weights of stock for each quadrent
-
-
-#         print (loop)
-#         print (weights)
-
         weight = weights[symbol]
 
-        print ("weee",weight[beg])
-
         # calculating each stock price
-        each_stock_price = int((input_price)*weight[beg])/no_of_stocks
-        print ("each_stock_price",each_stock_price)
+        each_stock_price = int((input_price)*weight[i])/no_of_stocks
 
         # calculating number of stocks can be buyied
-        number_of_stocks = each_stock_price/int(numpy_close_price_data[beg])
+        number_of_stocks = each_stock_price/int(close_price_data[symbol].iloc[i])
 
+        # obtainig price data, finding the profit or loss, changing the nan to 0, converting dataframe to list
+        stock_profit = close_price_dataframe[symbol].diff().fillna(0).T.tolist()
 
-
-        # testing
-        # for i in range(no_of_stocks):
-
-        holding = (input_price/(number_of_stocks*))
-        print "holding",holding
-
-
-        # end testing
-
-        # obtainig price data
-        quart_ret = returns_dataframe[symbol]
-
-        # filtering to obtain quarterly price data
-        # quart_ret = quart_ret.resample('Q', how='last')
-
-
-        # finding the profit or loss
-        quart_ret = quart_ret.diff()
-
-
-        # converting into numpy array
-        data = np.array(quart_ret)
-
-        #creating a list to convert numpy into a list of float of values
-        val = []
-        for i in data:
-            if np.isnan(i):
-                i = float(0)
-                val.append(i)
-            else:
-                i = float(i)
-                val.append(i)
-
-        # slicing to remove the first data from list ,ie:0
-        quart_ret = val[1:]
-
-        # taking the beg position value
-        rets = quart_ret[beg]
+        # taking the i+1 position value
+        profit = stock_profit[i+1]
 
         # find the total profit of stock
-        tot_ret = number_of_stocks*rets
-
+        tot_ret = number_of_stocks*profit
 
         # add all the profits to the all returns list
-        all_profits.append(tot_ret)
-
-    # create a list to store the profit and number of quarters
-    portfolio_ret = []
+        each_stock_profit.append(tot_ret)
 
     # sum all the profits of all stocks
-    col_sum = sum(all_profits)
-
-    # append all profit to portfolio_ret[] list
-    portfolio_ret.append(col_sum)
-
-    # append number of quarters to portfolio_ret[] list
-    portfolio_ret.append(len(quart_ret))
+    portfolio_profit = sum(each_stock_profit)
 
 
-    return portfolio_ret
+    return portfolio_profit

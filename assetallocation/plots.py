@@ -10,7 +10,7 @@ def weighted_returns_plot(stock_symbols, all_returns, time_period):
     stock_symbols = stock_symbols
 
     # add the TICKER symbol Equal_weighted to the stock inorder to display in graph
-    stock_symbols.append("Equal_weighted")
+    # stock_symbols.append("Equal_weighted")
 
     print ("all_returns",all_returns)
 

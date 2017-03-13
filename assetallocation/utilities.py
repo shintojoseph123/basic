@@ -95,3 +95,17 @@ def normalise(input_list,norm):
         input_list[i] = push
 
     return input_list
+
+
+def yearly_periods(time_period):
+
+    if time_period == "W":
+        yearly_period = 52
+    elif time_period == "M":
+        yearly_period = 12
+    elif time_period == "Q":
+        yearly_period = 4
+    elif time_period == "A":
+        yearly_period = 1
+
+    return yearly_period

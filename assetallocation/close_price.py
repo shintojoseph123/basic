@@ -23,5 +23,4 @@ def close_price(symbol, start, end):
     close = px[['Close']].dropna()
     close.columns = [symbol]
 
-
     return close[symbol]

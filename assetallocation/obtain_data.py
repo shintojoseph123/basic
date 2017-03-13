@@ -1,5 +1,7 @@
 from close_price import close_price
 
+import pandas as pd
+
 def close_price_data(start_year, end_year, stock_symbols, time_period):
     """
     obtainig data from yahoo finance
@@ -34,5 +36,8 @@ def close_price_data(start_year, end_year, stock_symbols, time_period):
         # filter  close_price_data according to the time_period
         close_price_data[symbol] = close_price_data[symbol].resample(time_period).last()
 
+    # converting to dataframe
+    close_price_dataframe = pd.DataFrame(close_price_data)
+    print "dataframe close price",close_price_dataframe
 
-    return close_price_data
+    return close_price_dataframe

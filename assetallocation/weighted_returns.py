@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 
 
-def weighted_returns(start_year, end_year, input_price, stock_symbols, weights, time_period):
+def weighted_returns(start_year, end_year, input_price, stock_symbols, weights, time_period,close_price):
     """
     function to find the returns of equal weighted portfolio and plot it
 
@@ -29,11 +29,16 @@ def weighted_returns(start_year, end_year, input_price, stock_symbols, weights, 
     # create a portfolio_prices list to store all the portfolio_profits with first input price as its first
     portfolio_prices = [input_price]
 
-    # obtainig close_price_data data
-    close_price = close_price_data(start_year, end_year, stock_symbols, time_period)
+    # # obtainig close_price_data data
+    # close_price = close_price_data(start_year, end_year, stock_symbols, time_period)
+    # print ("close_price",close_price)
 
-    # obtaining Quarterly returns using obtain_data() function
-    returns_dataframe = returns(close_price, stock_symbols)
+    # ATHIRAS CHANGE
+    close_price = close_price
+    print ("close_price",close_price)
+
+
+
 
     # finding how many time_periods are there between start date and end date
     time_period_num = time_period_number(start_year, end_year, time_period)
