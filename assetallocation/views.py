@@ -1,7 +1,9 @@
  # customised imports
 from weights import assign_weights
-from utilities import stocks
+from utilities import stocks,time_period_number
 from weighted_returns import weighted_returns
+from portfolio_profit import portfolio_profit
+from plots import weighted_returns_plot
 from brownian import geometric_brownian_motion_levels
 
 
@@ -63,8 +65,10 @@ def index(request):
     #     print "entered"
     #     print(timeit.timeit("test()", setup="from __main__ import test"))
 
+    time_period_num = time_period_number(start_year, end_year, time_period)
+
     # assign weights
-    weights = assign_weights(start_year,end_year,time_period,stock_symbols)
+    weights = assign_weights(time_period_num, stock_symbols)
 
 # athiras
     # start- function call
@@ -76,7 +80,18 @@ def index(request):
 
 # athiras end
 
-    weighted_returns(start_year, end_year, input_price, stock_symbols, weights, time_period,close_price)
+    # until the end of timeperiod
+    portfolio_profits = []
+    for i in range(time_period_num):
+
+        # obtain total profit
+        portfolio_profits.append(portfolio_profit(input_price, i, close_price, weights, stock_symbols))
+    print portfolio_profits[0]
+
+    portfolio_returns = weighted_returns(start_year, end_year, input_price, stock_symbols, weights, time_period_num, close_price, portfolio_profits)
+
+    # plotting weighted_returns
+    weighted_returns_plot(stock_symbols, portfolio_returns, time_period)
 
     # # working timeit
     # import timeit

@@ -2,7 +2,7 @@
 from obtain_data import close_price_data
 from portfolio_profit import portfolio_profit
 from utilities import returns,time_period_number,normalise
-from plots import weighted_returns_plot
+
 
 
 # importing libraries
@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 
 
-def weighted_returns(start_year, end_year, input_price, stock_symbols, weights, time_period,close_price):
+def weighted_returns(start_year, end_year, input_price, stock_symbols, weights, time_period_num, close_price, portfolio_profits):
     """
     function to find the returns of equal weighted portfolio and plot it
 
@@ -21,7 +21,7 @@ def weighted_returns(start_year, end_year, input_price, stock_symbols, weights, 
     input_price : amount to buy the stocks
     stock_symbols : TICKER symbol of each stocks
     weights : weights for each stock at each time_period
-    time_period : weekly, monthly, quarterly, yearly
+    time_period_num : number of time_periods
     """
 
     portfolio_returns = []
@@ -29,28 +29,14 @@ def weighted_returns(start_year, end_year, input_price, stock_symbols, weights, 
     # create a portfolio_prices list to store all the portfolio_profits with first input price as its first
     portfolio_prices = [input_price]
 
-    # # obtainig close_price_data data
-    # close_price = close_price_data(start_year, end_year, stock_symbols, time_period)
-    # print ("close_price",close_price)
-
-    # ATHIRAS CHANGE
-    close_price = close_price
-    print ("close_price",close_price)
-
-
-
-
-    # finding how many time_periods are there between start date and end date
-    time_period_num = time_period_number(start_year, end_year, time_period)
-
     # until the end of timeperiod
     for i in range(time_period_num):
 
         # obtain total profit
-        portfolio_profits = portfolio_profit(input_price, i, close_price, weights, stock_symbols)
+        portfolio_profit = portfolio_profits[i]
 
         # add total profit with input price
-        input_price = input_price + portfolio_profits
+        input_price = input_price + portfolio_profit
 
         # append new input price to the portfolio list
         portfolio_prices.append(input_price)
@@ -70,5 +56,4 @@ def weighted_returns(start_year, end_year, input_price, stock_symbols, weights, 
     # append all the norm_portfolio_returns to portfolio_returns[]
     portfolio_returns.append(norm_portfolio_returns)
 
-    # plotting weighted_returns
-    weighted_returns_plot(stock_symbols, portfolio_returns, time_period)
+    return portfolio_returns
